@@ -47,17 +47,20 @@ def submit_file():
         # user_id = int(request.form['user-id'])
         # f.save(secure_filename(f.filename))
 
-        directory = os.path.join('Songs', str(session.get('user_id')), album)
+        directory = os.path.join('static', 'Songs', str(session.get('user_id')), album)
 
-        file_path = os.path.join(directory, file_source.filename)
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        file_source.save(file_path)
-        file_path = os.path.abspath(file_path)
-        print("file_path", file_path)
+        if not os.path.exists(os.path.join('music_man', directory)):
+            os.makedirs(os.path.join('music_man', directory))
+        file_source.save(os.path.join('music_man', directory, file_source.filename))
+        # file_path = os.path.abspath(file_path)
+        # file_path = file_path.split(':')
+        # file_path = file_path[0]+':\\'+ file_path[1]
+        static_url = 'http://localhost:5000/static/Songs/{}/{}/{}'.format(session.get('user_id'),
+                                                                         album, file_source.filename)
+        print("file_path", static_url)
 
         db_session.add(Songs(title=title, album=album, artist=artist,
-                             file_location=file_path, user_id=session.get('user_id')))
+                             file_location=static_url, user_id=session.get('user_id')))
         db_session.commit()
 
         # return redirect(url_for('dashboard_controller.render_dashboard'))
