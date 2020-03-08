@@ -1,5 +1,9 @@
 # ide files
 settings.json
+music_man.sqlite3
+Songs/
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

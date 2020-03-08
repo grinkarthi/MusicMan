@@ -76,26 +76,27 @@ class Category(Model):
         return url_for('snippets.category', slug=self.slug)
 
 
-class Snippet(Model):
-    __tablename__ = 'snippets'
-    id = Column('snippet_id', Integer, primary_key=True)
-    author_id = Column(Integer, ForeignKey('users.user_id'))
-    category_id = Column(Integer, ForeignKey('categories.category_id'))
-    title = Column(String(200))
-    body = Column(String)
-    pub_date = Column(DateTime)
+class Songs(Model):
+    __tablename__ = 'songs'
+    id = Column('song_id', Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'))
+    album = Column(String(500))
+    title = Column(String(500))
+    artist = Column(String(500))
+    is_active = Column(Boolean)
+    file_location = Column(String(1000))
+    created_date = Column(DateTime)
+    updated_date = Column(DateTime)
 
-    author = relation(User, backref=backref('snippets', lazy='dynamic'))
-    category = relation(Category, backref=backref('snippets', lazy='dynamic'))
 
-    search_document_kind = 'snippet'
-
-    def __init__(self, author, title, body, category):
-        self.author = author
+    def __init__(self, title, album, artist, file_location, user_id):
+        self.album = album
         self.title = title
-        self.body = body
-        self.category = category
-        self.pub_date = datetime.utcnow()
+        self.artist = artist
+        self.file_location = file_location
+        self.created_date = datetime.utcnow()
+        self.is_active = True
+        self.user_id = user_id
 
     def to_json(self):
         return dict(id=self.id, title=self.title,
@@ -139,7 +140,6 @@ class Comment(Model):
     text = Column(String)
     pub_date = Column(DateTime)
 
-    snippet = relation(Snippet, backref=backref('comments', lazy=True))
     author = relation(User, backref=backref('comments', lazy='dynamic'))
 
     def __init__(self, snippet, author, title, text):
