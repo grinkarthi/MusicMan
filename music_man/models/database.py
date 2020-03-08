@@ -1,17 +1,18 @@
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, \
-     ForeignKey, event
+     ForeignKey, event, Boolean
 from sqlalchemy.orm import scoped_session, sessionmaker, backref, relation
 from sqlalchemy.ext.declarative import declarative_base
 
-from werkzeug import cached_property, http_date
-
 from flask import url_for, Markup
-from flask_website import app, search
+from flask import current_app as app
 
-engine = create_engine(app.config['DATABASE_URI'],
-                       convert_unicode=True,
-                       **app.config['DATABASE_CONNECT_OPTIONS'])
+from music_man.conf import config
+
+confi_prop = config.Config()
+
+engine = create_engine(confi_prop.DB_HOST,
+                       convert_unicode=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
@@ -29,6 +30,11 @@ class User(Model):
     id = Column('user_id', Integer, primary_key=True)
     openid = Column('openid', String(200))
     name = Column(String(200))
+    email = Column(String(200))
+    password = Column(String(200))
+    is_active = Column(Boolean)
+    created_date = Column(DateTime)
+    updated_date = Column(DateTime)
 
     def __init__(self, name, openid):
         self.name = name
@@ -61,16 +67,16 @@ class Category(Model):
     def to_json(self):
         return dict(name=self.name, slug=self.slug, count=self.count)
 
-    @cached_property
-    def count(self):
-        return self.snippets.count()
+    # @cached_property
+    # def count(self):
+    #     return self.snippets.count()
 
     @property
     def url(self):
         return url_for('snippets.category', slug=self.slug)
 
 
-class Snippet(Model, search.Indexable):
+class Snippet(Model):
     __tablename__ = 'snippets'
     id = Column('snippet_id', Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('users.user_id'))
@@ -94,7 +100,7 @@ class Snippet(Model, search.Indexable):
     def to_json(self):
         return dict(id=self.id, title=self.title,
                     body=unicode(self.rendered_body),
-                    pub_date=http_date(self.pub_date),
+                    # pub_date=http_date(self.pub_date),
                     comments=[c.to_json() for c in self.comments],
                     author=self.author.to_json(),
                     category=self.category.slug)
@@ -146,7 +152,7 @@ class Comment(Model):
     def to_json(self):
         return dict(author=self.author.to_json(),
                     title=self.title,
-                    pub_date=http_date(self.pub_date),
+                    # pub_date=http_date(self.pub_date),
                     text=unicode(self.rendered_text))
 
     @property
@@ -174,4 +180,5 @@ class OpenIDUserNonce(Model):
     salt = Column(String(40))
 
 
-event.listen(db_session, 'after_flush', search.update_model_based_indexes)
+# event.listen(db_session, 'after_flush')
+init_db()
