@@ -47,11 +47,11 @@
         </ul>
 
         {% if user_id %}
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0" enctype="multipart/form-data" method="POST" action="/submit-search">
+            <input name="search_string" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required>
 
 
-                <select class="form-control mr-sm-2" id="sel1">
+                <select name="search_field" class="form-control mr-sm-2" id="sel1">
                   <option>Song</option>
                   <option>Album</option>
                   <option>Artist</option>

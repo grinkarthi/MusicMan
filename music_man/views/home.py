@@ -15,14 +15,16 @@ def index():
     if not user_id:
         return redirect('/login')
 
-    song_model = Songs.query.filter_by(user_id=user_id).order_by(desc(Songs.created_date)).limit(5).all() 
+    song_model = Songs.query.filter_by(user_id=user_id).order_by(
+        desc(Songs.created_date)).limit(5).all()
 
     return render_template(
         'home.html', song_model=song_model,
         tittle='Recently Added',
-        user_id = user_id
+        user_id=user_id
 
     )
+
 
 @mod.route('/view-all')
 def view_all():
@@ -32,11 +34,63 @@ def view_all():
     if not user_id:
         return redirect('/login')
 
-    song_model = Songs.query.filter_by(user_id=user_id).order_by(desc(Songs.created_date)).all() 
-
+    song_model = Songs.query.filter_by(
+        user_id=user_id).order_by(desc(Songs.created_date)).all()
 
     return render_template(
         'home.html', song_model=song_model,
         tittle='All Songs',
-        user_id = user_id
+        user_id=user_id
     )
+
+
+@mod.route('/search')
+def search():
+
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return redirect('/login')
+
+    query = request.args.get('q')
+    field = request.args.get('f')
+
+    if not query or not field or not field in ('Song', 'Album', 'Artist'):
+        song_model = []
+
+    else:
+        if field == 'Song':
+            song_model = Songs.query.filter(Songs.title.like('%' + query + '%')).all()
+        elif field == 'Album':
+            song_model = Songs.query.filter(Songs.album.like('%' + query + '%')).all()
+        elif field == 'Artist':
+            song_model = Songs.query.filter(Songs.artist.like('%' + query + '%')).all()
+
+    return render_template(
+        'home.html', song_model=song_model,
+        tittle='Search Result',
+        user_id=user_id
+    )
+
+@mod.route('/submit-search', methods=['POST'])
+def submit_file():
+
+    """ Route used to train or predict model
+
+        Args: model_details, file_source
+        None
+
+        Returns: Redirects to dashboard or status page
+    """
+    if not session.get('user_id'):
+        return redirect('/login')
+
+    print('inside')
+    print(request.files)
+    if request.method == 'POST':
+        print(request.form)
+        search_string = request.form.get('search_string')
+        search_field = request.form.get('search_field')
+
+        return redirect('/search?q={}&f={}'.format(search_string, search_field))
+
