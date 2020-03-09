@@ -12,16 +12,16 @@ def index():
 
     user_id = session.get('user_id')
 
-    if session.get('user_id'):
-        print('show header')
+    if not user_id:
+        return redirect('/login')
 
     song_model = Songs.query.filter_by(user_id=user_id).order_by(desc(Songs.created_date)).limit(5).all() 
-    '''if not song_model:
-        return redirect('/page-not-found')'''
 
     return render_template(
         'home.html', song_model=song_model,
-        tittle='Recently Added'
+        tittle='Recently Added',
+        user_id = user_id
+
     )
 
 @mod.route('/view-all')
@@ -29,14 +29,14 @@ def view_all():
 
     user_id = session.get('user_id')
 
-    if session.get('user_id'):
-        print('show header')
+    if not user_id:
+        return redirect('/login')
 
     song_model = Songs.query.filter_by(user_id=user_id).order_by(desc(Songs.created_date)).all() 
-    '''if not song_model:
-        return redirect('/page-not-found')'''
+
 
     return render_template(
         'home.html', song_model=song_model,
-        tittle='All Songs'
+        tittle='All Songs',
+        user_id = user_id
     )

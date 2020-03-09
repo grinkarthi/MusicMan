@@ -11,11 +11,14 @@ mod = Blueprint('upload', __name__)
 @mod.route('/upload-song')
 def index():
 
-    if not session.get('user_id'):
+    user_id = session.get('user_id')
+
+    if not user_id:
         return redirect('/login')
 
     return render_template(
-        'upload.html'
+        'upload.html',
+        user_id=user_id
     )
 
 @mod.route('/submit-file', methods=['POST'])
