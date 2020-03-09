@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<style>
+    #sticky-footer {
+  flex-shrink: none;
+  position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: white;
+   text-align: center;
+}
+</style>
+
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <!-- A grey horizontal navbar that becomes vertical on small screens -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">MusicMan</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">View All</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Upload</a>
+                </li>
+
+                <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My account
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Dashboard</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Logout</a>
+              </div>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link disabled" href="#">Disabled</a>
+            </li> -->
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+
+
+                    <select class="form-control mr-sm-2" id="sel1">
+                      <option>Song</option>
+                      <option>Album</option>
+                      <option>Artist</option>
+                    </select>
+
+
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            
+        </div>
+    </nav>
+
+    <div class="container">
+        <br>
+        <h4 class="text-center">{{tittle}}</h4>
+        <br>
+
+        {% if not song_model %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">No Songs Available</h5>
+            <p class="card-text">Please Upload Songs</p>
+            <a href="/upload-song" class="btn btn-outline-success btn-sm">Upload Song</a>
+          </div>
+        </div>
+
+{% endif %}
+
+        {% for song in song_model %}
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">{{song.title}}</h5>
+              <p class="card-text">Album: {{song.album}}</p>
+              <p class="card-text">Artist: {{song.artist}}</p>
+              <a href="/stream-song/{{song.id}}" class="btn btn-outline-success btn-sm">Stream Song</a>
+            </div>
+          </div>
+          {% endfor %}
+
+
+<!-- 
+
+          <div class="text-center">
+            <button class="btn btn-outline-secondary btn-sm">Load More</button>
+          </div> -->
+          
+    </div>
+
+
+
+
+    <footer id="sticky-footer" class="py-1 bg-dark text-white-50">
+        <div class="container text-center">
+          <small>Copyright &copy; MusicMan</small>
+        </div>
+      </footer>
+
+<script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      })
+
+</script>
+
+
+</body>
+
+</html>
