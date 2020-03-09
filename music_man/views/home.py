@@ -60,11 +60,14 @@ def search():
 
     else:
         if field == 'Song':
-            song_model = Songs.query.filter(Songs.title.like('%' + query + '%')).all()
+            song_model = Songs.query.filter(Songs.title.like(
+                '%' + query + '%')).filter_by(user_id=user_id).order_by(desc(Songs.created_date)).all()
         elif field == 'Album':
-            song_model = Songs.query.filter(Songs.album.like('%' + query + '%')).all()
+            song_model = Songs.query.filter(Songs.album.like(
+                '%' + query + '%')).filter_by(user_id=user_id).order_by(desc(Songs.created_date)).all()
         elif field == 'Artist':
-            song_model = Songs.query.filter(Songs.artist.like('%' + query + '%')).all()
+            song_model = Songs.query.filter(Songs.artist.like(
+                '%' + query + '%')).filter_by(user_id=user_id).order_by(desc(Songs.created_date)).all()
 
     return render_template(
         'search.html', song_model=song_model,
@@ -72,9 +75,9 @@ def search():
         user_id=user_id, query=query,
     )
 
+
 @mod.route('/submit-search', methods=['POST'])
 def submit_file():
-
     """ Route used to train or predict model
 
         Args: model_details, file_source
@@ -93,4 +96,3 @@ def submit_file():
         search_field = request.form.get('search_field')
 
         return redirect('/search?q={}&f={}'.format(search_string, search_field))
-

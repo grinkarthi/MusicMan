@@ -5,6 +5,7 @@ from music_man.views import upload
 from music_man.views import login
 from music_man.views import stream_song
 from music_man.views import home
+from music_man.views import dashboard
 from music_man.conf import config
 from music_man.models.database import User, db_session
 
@@ -17,10 +18,7 @@ app.register_blueprint(home.mod)
 app.register_blueprint(upload.mod)
 app.register_blueprint(login.mod)
 app.register_blueprint(stream_song.mod)
-
-
-
-
+app.register_blueprint(dashboard.mod)
 
 
 @app.errorhandler(404)
