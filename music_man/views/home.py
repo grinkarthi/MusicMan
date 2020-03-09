@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect,\
     session, request, flash, g, jsonify, abort, url_for
-from music_man.models.database import Songs
+from music_man.models.database import Songs, db_session
 from sqlalchemy import desc
 import json
 
@@ -96,3 +96,32 @@ def submit_file():
         search_field = request.form.get('search_field')
 
         return redirect('/search?q={}&f={}'.format(search_string, search_field))
+
+
+@mod.route('/delete-song/<int:id>', methods=['DELETE'])
+def delete_song(id):
+    """ Route used to train or predict model
+
+        Args: model_details, file_source
+        None
+
+        Returns: Redirects to dashboard or status page
+    """
+
+    user_id = session.get('user_id')
+
+    if not user_id:
+        return redirect('/login')
+
+    if request.method == 'DELETE':
+        song_model = Songs.query.filter_by(user_id=user_id, id=id).first()
+
+        if song_model:
+            db_session.delete(song_model)
+            db_session.commit()
+
+            return jsonify({'status': True})
+        return jsonify({'status': False})
+
+
+

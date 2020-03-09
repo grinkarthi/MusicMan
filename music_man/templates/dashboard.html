@@ -27,13 +27,13 @@
                 
                 {% for song in song_model %}
 
-              <tr>
+              <tr id="row-{{song.id}}">
                 <th scope="row">{{song.id}}</th>
                 <td data-toggle="tooltip" data-placement="top" title="{{song.title}}">{{song.title[:20] + '...' if song.title | length > 20 else song.title}}</td>
                 <td data-toggle="tooltip" data-placement="top" title="{{song.artist}}">{{song.artist[:20] + '...' if song.artist | length > 20 else song.artist}}</td>
                 <td data-toggle="tooltip" data-placement="top" title="{{song.album}}">{{song.album[:20] + '...' if song.album | length > 20 else song.album}}</td>
                 <td><a href="stream-song/{{song.id}}" class="btn btn-outline-success btn-sm">Stream</a></td>
-                <td><button type="button" class="btn btn-outline-danger btn-sm">Delete</button></td>
+                <td><button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteSong({{song.id}})">Delete</button></td>
               </tr>
               {% endfor %}
 
@@ -57,6 +57,75 @@
         $('[data-toggle="tooltip"]').tooltip();
       })
 
+</script>
+
+<script>
+    function deleteSong(song_id) {
+
+        var r = confirm("Are you want to delete..!?");
+
+        if (r == true) {
+    
+  } else {
+    return false;
+  }
+ 
+
+        $.ajax({
+            type: "DELETE",
+            url: '/delete-song/' + song_id,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({}),
+            //traditional: true,
+
+
+            success: function (result) {
+                //console.log(result);
+
+                if (result.status == false) {
+                    //    	            		document.getElementById("error-validation").innerHTML = "Invalid Username or Password";
+                    //    	            		document.getElementById("error-validation").style.display = "block";
+
+                    alert('false');
+                    document.getElementById("error-validation").innerHTML = "";
+                    document.getElementById("error-validation").innerHTML +=
+                        '<div class="alert alert-danger">' +
+                        'Invalid Username or Password' +
+                        '</div>'
+                    $("#error-validation").show()
+                    $('#error-validation').delay(5000).fadeOut('slow');
+                    setTimeout(function () {
+                        // $('#login_form').trigger("reset");
+                    }, 5000);
+
+                    return false;
+
+
+                }
+                else {
+                    //	loginFormSubmit();
+                    //console.log("else-----");
+
+                    if (result.status == true) {//console.log(result);
+
+                        var elem = document.getElementById('row-' + song_id);
+                             elem.parentNode.removeChild(elem);
+                    
+
+                    }
+                }
+
+            }
+
+        });
+
+
+
+
+        return false;
+
+    }
 </script>
 
 
