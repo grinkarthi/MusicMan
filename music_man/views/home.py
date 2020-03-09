@@ -67,9 +67,9 @@ def search():
             song_model = Songs.query.filter(Songs.artist.like('%' + query + '%')).all()
 
     return render_template(
-        'home.html', song_model=song_model,
-        tittle='Search Result',
-        user_id=user_id
+        'search.html', song_model=song_model,
+        tittle='Search Result', field=field,
+        user_id=user_id, query=query,
     )
 
 @mod.route('/submit-search', methods=['POST'])

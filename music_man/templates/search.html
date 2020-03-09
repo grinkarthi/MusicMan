@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "head.html" %}
+
+<body>
+
+
+  {% include "header.html" %}
+
+  <div class="container">
+    <br>
+    <h4 class="text-center">{{tittle}}</h4>
+    <br>
+
+    <p class="text-center">Search String: {{query}}</p>
+    <p class="text-center">Search Field: {{field}}</p>
+
+    {% if not song_model %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">No Songs Available</h5>
+      </div>
+    </div>
+
+    {% endif %}
+
+    {% for song in song_model %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{song.title}}</h5>
+        <p class="card-text">Album: {{song.album}}</p>
+        <p class="card-text">Artist: {{song.artist}}</p>
+        <a href="/stream-song/{{song.id}}" class="btn btn-outline-success btn-sm">Stream Song</a>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  {% include "footer.html" %}
+
+</body>
+
+</html>
