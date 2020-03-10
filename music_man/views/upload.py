@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, session, redirect, url_for, \
     request, flash, g, jsonify, abort
 from music_man.models.database import Songs, db_session
+from music_man.conf import config
+from sqlalchemy import update
 
-
+import hashlib
 import os
 
 mod = Blueprint('upload', __name__)
@@ -24,30 +26,22 @@ def index():
 
 @mod.route('/submit-file', methods=['POST'])
 def submit_file():
-    """ Route used to train or predict model
+    """ Route used to upload song
 
-        Args: model_details, file_source
-        None
+        Args: filename, title, album, artist
+
 
         Returns: Redirects to dashboard or status page
     """
     if not session.get('user_id'):
         return redirect('/login')
 
-    print('inside')
-    print(request.files)
     if request.method == 'POST':
-        print(request)
-        print(request.form)
-        print(request.files)
 
         file_source = request.files.get('filename')
         title = request.form.get('title')
         album = request.form.get('album')
         artist = request.form.get('artist')
-
-        # user_id = int(request.form['user-id'])
-        # f.save(secure_filename(f.filename))
 
         directory = os.path.join(
             'static', 'Songs', str(session.get('user_id')), album)
@@ -56,19 +50,32 @@ def submit_file():
             os.makedirs(os.path.join('music_man', directory))
         file_source.save(os.path.join(
             'music_man', directory, file_source.filename))
-        # file_path = os.path.abspath(file_path)
-        # file_path = file_path.split(':')
-        # file_path = file_path[0]+':\\'+ file_path[1]
-        static_url = 'http://localhost:5000/static/Songs/{}/{}/{}'.format(session.get('user_id'),
-                                                                          album, file_source.filename)
-        print("file_path", static_url)
 
-        db_session.add(Songs(title=title, album=album, artist=artist,
-                             file_location=static_url, user_id=session.get('user_id')))
+        confi_prop = config.Config()
+        static_url = '{}/static/Songs/{}/{}/{}'.format(confi_prop.APP_SERVER,
+                                                       session.get('user_id'),
+                                                       album, file_source.filename)
+
+        print("static_url--", static_url)
+
+        song_model = Songs(title=title, album=album, artist=artist,
+                           file_location=static_url, user_id=session.get('user_id'))
+
+        db_session.add(song_model)
+        db_session.flush()
         db_session.commit()
 
-        # return redirect(url_for('dashboard_controller.render_dashboard'))
-        return redirect('/upload-song')
+        song_id = song_model.id
+        print(song_id)
+
+        hashed_id = hashlib.md5(str(song_id).encode()).hexdigest()
+        print(hashed_id)
+
+        update(Songs).where(Songs.id == song_id).values(hashed_id=hashed_id)
+
+        db_session.commit()
+
+        return redirect('/')
 
 
 @mod.route('/file_validation', methods=['POST'])
@@ -92,12 +99,10 @@ def file_validation():
     artist = input_details['artist']
 
     songs_model = Songs.query.filter_by(user_id=user_id,
-                                        title=title, album=album, artist=artist).first()
+                                        title=title, album=album, artist=artist, is_active=True).first()
     if not songs_model:
         result = {"status": True}
-        print("result", result)
         return jsonify(result)
     else:
         result = {"status": False}
-        print("result", result)
         return jsonify(result)

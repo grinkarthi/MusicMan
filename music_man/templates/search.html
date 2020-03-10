@@ -31,7 +31,7 @@
         <h5 class="card-title">{{song.title}}</h5>
         <p class="card-text">Album: {{song.album}}</p>
         <p class="card-text">Artist: {{song.artist}}</p>
-        <a href="/stream-song/{{song.id}}" class="btn btn-outline-success btn-sm">Stream Song</a>
+        <a href="/stream-song/{{song.hashed_id}}" class="btn btn-outline-success btn-sm">Stream Song</a>
       </div>
     </div>
     {% endfor %}

@@ -16,13 +16,11 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-8 col-xl-6">
 
-                <form class="form-horizontal" enctype="multipart/form-data" method="POST"
-                    onsubmit="return Validate_input_file(this);" action="/submit-file">
+                <form class="form-horizontal" enctype="multipart/form-data" method="POST" onsubmit="return Validate_input_file(this);" action="/submit-file">
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="email">Title:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="title" id="title" placeholder="Enter Title"
-                                required>
+                            <input type="text" class="form-control" name="title" id="title" placeholder="Enter Title" required>
                         </div>
                     </div>
 
@@ -30,16 +28,14 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="email">Album:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="album" id="album" placeholder="Enter Album"
-                                required>
+                            <input type="text" class="form-control" name="album" id="album" placeholder="Enter Album" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="pwd">Artist:</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="artist" id="artist" placeholder="Enter Artist"
-                                required>
+                            <input type="text" class="form-control" name="artist" id="artist" placeholder="Enter Artist" required>
                         </div>
                     </div>
 
@@ -70,19 +66,13 @@
 
     <script>
         // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
+        $(".custom-file-input").on("change", function() {
             var fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
     </script>
 
     <script>
-        // function post_validation(result_status)
-        // {
-        //     alert(result_status)
-        //     return result_status;
-
-        // }
         function Validate_input_file() {
 
             result_status = true;
@@ -97,17 +87,16 @@
                     '</div>'
                 $("#error-validation").show()
                 $('#error-validation').delay(5000).fadeOut('slow');
-                setTimeout(function () {
-                }, 5000);
+                setTimeout(function() {}, 5000);
                 return false;
-            }
-            else {
+            } else {
                 title = document.getElementById("title").value;
                 album = document.getElementById("album").value;
                 artist = document.getElementById("artist").value;
 
                 var data = {
-                    "title": title, "album": album,
+                    "title": title,
+                    "album": album,
                     "artist": artist
                 };
                 $.ajax({
@@ -116,8 +105,7 @@
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     data: JSON.stringify(data),
-                    success: function (result) {
-                        console.log(result);
+                    success: function(result) {
 
                         if (result.status == false) {
 
@@ -128,14 +116,12 @@
                                 '</div>'
                             $("#error-validation").show()
                             $('#error-validation').delay(5000).fadeOut('slow');
-                            setTimeout(function () {
-                            }, 5000);
+                            setTimeout(function() {}, 5000);
 
                             result_status = false;
 
 
-                        }
-                        else {
+                        } else {
 
 
                             if (result.status == true) {
@@ -146,8 +132,7 @@
                                     '</div>'
                                 $("#error-validation").show()
                                 $('#error-validation').delay(5000).fadeOut('slow');
-                                setTimeout(function () {
-                                }, 5000);
+                                setTimeout(function() {}, 5000);
 
                                 //window.location.href = '/';
                                 result_status = true;
@@ -168,8 +153,6 @@
             // result = post_validation(result_status);
             return result_status;
         }
-
-
     </script>
 
 

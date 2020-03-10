@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "head.html" %}
+
+<body>
+
+
+    {% include "header.html" %}
+
+    <div class="container">
+        <br>
+        <h4 class="text-center">Signup</h4>
+        <br>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+
+                <form class="form-horizontal" method="post" onsubmit="return signup_user(this);" id="signup_form">
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-4" for="full_name">Full Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="full_name" placeholder="Enter Name" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="email">Email:</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email" placeholder="Enter Email" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="password">Password:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" placeholder="Enter Password" required>
+                        </div>
+                    </div>
+
+
+                    <div class="text-center">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Signup</button>
+                        </div>
+                    </div>
+
+
+                </form>
+                <p id="error-validation"></p>
+            </div>
+        </div>
+
+    </div>
+
+
+    {% include "footer.html" %}
+    <script>
+        function signup_user() {
+
+            name = $('#full_name').val();
+            email = $('#email').val();
+            pswd = $('#password').val();
+
+            var user_detail = {};
+            user_detail['full_name'] = name;
+            user_detail['email'] = email;
+            user_detail['pswd'] = pswd;
+
+            $.ajax({
+                type: "POST",
+                url: "/register-user",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(user_detail),
+                success: function(result) {
+
+                    if (result.status === 'Successfully Registered') {
+
+                        document.getElementById("error-validation").innerHTML = "";
+                        document.getElementById("error-validation").innerHTML +=
+                            '<div class="alert alert-success">' +
+                            'Successfully registered!!!' +
+                            '</div>'
+                        $("#error-validation").show()
+                        $('#error-validation').delay(5000).fadeOut('slow');
+                        setTimeout(function() {}, 5000);
+
+                        window.location.href = '/login';
+                    } else {
+
+                        document.getElementById("error-validation").innerHTML = "";
+                        document.getElementById("error-validation").innerHTML +=
+                            '<div class="alert alert-danger">' +
+                            result.status +
+                            '</div>'
+                        $("#error-validation").show()
+                        $('#error-validation').delay(5000).fadeOut('slow');
+                        setTimeout(function() {}, 5000);
+                        return false;
+                    }
+                }
+            })
+            return false;
+        }
+    </script>
+
+</body>
+
+</html>

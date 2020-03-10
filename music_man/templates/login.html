@@ -31,8 +31,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="email">Password:</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="password" placeholder="Enter Password"
-                                required>
+                            <input type="password" class="form-control" id="password" placeholder="Enter Password" required>
                         </div>
                     </div>
 
@@ -55,8 +54,7 @@
 
 
     <script>
-        // Add the following code if you want the name of the file appear on select
-        $(".custom-file-input").on("change", function () {
+        $(".custom-file-input").on("change", function() {
             var fileName = $(this).val().split("\\").pop();
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         });
@@ -66,24 +64,22 @@
         function Validate(oForm) {
             var inputString1 = document.getElementById('email').value;
             var passwordinput1 = document.getElementById('password').value;
-            /* var remember1 = document.getElementById('inputCheckbox').checked; */
-            var data = { "email": inputString1, "password": passwordinput1 };
+
+            var data = {
+                "email": inputString1,
+                "password": passwordinput1
+            };
             $.ajax({
                 type: "POST",
                 url: '/login_validation/data',
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 data: JSON.stringify(data),
-                //traditional: true,
 
+                success: function(result) {
 
-                success: function (result) {
-                    //console.log(result);
 
                     if (result.status == false) {
-                        //    	            		document.getElementById("error-validation").innerHTML = "Invalid Username or Password";
-                        //    	            		document.getElementById("error-validation").style.display = "block";
-
 
                         document.getElementById("error-validation").innerHTML = "";
                         document.getElementById("error-validation").innerHTML +=
@@ -92,21 +88,16 @@
                             '</div>'
                         $("#error-validation").show()
                         $('#error-validation').delay(5000).fadeOut('slow');
-                        setTimeout(function () {
-                            // $('#login_form').trigger("reset");
+                        setTimeout(function() {
+
                         }, 5000);
 
                         return false;
 
 
-                    }
-                    else {
-                        //	loginFormSubmit();
-                        //console.log("else-----");
+                    } else {
 
-                        if (result.status == true) {//console.log(result);
-
-
+                        if (result.status == true) {
 
                             window.location.href = '/';
                         }
@@ -115,8 +106,6 @@
                 }
 
             });
-
-
 
 
             return false;
