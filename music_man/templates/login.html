@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "head.html" %}
+
+<body>
+
+
+    {% include "header.html" %}
+
+    <div class="container">
+        <br>
+        <h4 class="text-center">Login</h4>
+        <br>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-8 col-xl-6">
+
+                <form class="form-horizontal" method="post" onsubmit="return Validate(this);" id="login_form">
+
+                    <p id="error-validation"></p>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="email">Email:</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email" placeholder="Enter Email" required>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="email">Password:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" placeholder="Enter Password" required>
+                        </div>
+                    </div>
+
+
+                    <div class="text-center">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Login</button>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+    {% include "footer.html" %}
+
+
+    <script>
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+    <script>
+        function Validate(oForm) {
+            var inputString1 = document.getElementById('email').value;
+            var passwordinput1 = document.getElementById('password').value;
+
+            var data = {
+                "email": inputString1,
+                "password": passwordinput1
+            };
+            $.ajax({
+                type: "POST",
+                url: '/login_validation/data',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(data),
+
+                success: function(result) {
+
+
+                    if (result.status == false) {
+
+                        document.getElementById("error-validation").innerHTML = "";
+                        document.getElementById("error-validation").innerHTML +=
+                            '<div class="alert alert-danger">' +
+                            'Invalid Username or Password' +
+                            '</div>'
+                        $("#error-validation").show()
+                        $('#error-validation').delay(5000).fadeOut('slow');
+                        setTimeout(function() {
+
+                        }, 5000);
+
+                        return false;
+
+
+                    } else {
+
+                        if (result.status == true) {
+
+                            window.location.href = '/';
+                        }
+                    }
+
+                }
+
+            });
+
+
+            return false;
+
+        }
+    </script>
+
+</body>
+
+</html>

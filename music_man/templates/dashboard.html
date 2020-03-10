@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "head.html" %}
+
+<body>
+
+
+    {% include "header.html" %}
+
+    <div class="container">
+        <br>
+        <h4 class="text-center">Recently Added</h4>
+        <br>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Play</th>
+                    <th scope="col">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for song in song_model %}
+
+                <tr id="row-{{song.id}}">
+                    <th scope="row">{{song.id}}</th>
+                    <td data-toggle="tooltip" data-placement="top" title="{{song.title}}">
+                        {{song.title[:20] + '...' if song.title | length > 20 else song.title}}</td>
+                    <td data-toggle="tooltip" data-placement="top" title="{{song.artist}}">
+                        {{song.artist[:20] + '...' if song.artist | length > 20 else song.artist}}</td>
+                    <td data-toggle="tooltip" data-placement="top" title="{{song.album}}">
+                        {{song.album[:20] + '...' if song.album | length > 20 else song.album}}</td>
+                    <td><a href="stream-song/{{song.hashed_id}}" class="btn btn-outline-success btn-sm">Stream</a></td>
+                    <td><button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteSong({{song.id}})">Delete</button></td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+    {% include "footer.html" %}
+
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+
+    <script>
+        function deleteSong(song_id) {
+
+            var r = confirm("Are you want to delete..!?");
+
+            if (r == true) {
+
+            } else {
+                return false;
+            }
+
+
+            $.ajax({
+                type: "DELETE",
+                url: '/delete-song/' + song_id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify({}),
+                //traditional: true,
+
+
+                success: function(result) {
+
+
+                    if (result.status == false) {
+
+
+                        document.getElementById("error-validation").innerHTML = "";
+                        document.getElementById("error-validation").innerHTML +=
+                            '<div class="alert alert-danger">' +
+                            'Invalid Username or Password' +
+                            '</div>'
+                        $("#error-validation").show()
+                        $('#error-validation').delay(5000).fadeOut('slow');
+                        setTimeout(function() {
+
+                        }, 5000);
+
+                        return false;
+
+
+                    } else {
+
+                        if (result.status == true) {
+                            var elem = document.getElementById('row-' + song_id);
+                            elem.parentNode.removeChild(elem);
+
+
+                        }
+                    }
+
+                }
+
+            });
+
+            return false;
+
+        }
+    </script>
+
+
+</body>
+
+</html>
