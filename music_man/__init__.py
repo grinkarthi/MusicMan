@@ -24,7 +24,8 @@ app.register_blueprint(signup.mod)
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html', user_id=session.get('user_id')), 404
+    page_title = 'MusicMan | 404 Page'
+    return render_template('404.html', user_id=session.get('user_id'), page_title=page_title), 404
 
 
 @app.before_request

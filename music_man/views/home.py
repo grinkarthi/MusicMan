@@ -10,6 +10,7 @@ mod = Blueprint('home', __name__)
 @mod.route('/')
 def index():
 
+    page_title = 'MusicMan | Home'
     user_id = session.get('user_id')
 
     if not user_id:
@@ -25,7 +26,7 @@ def index():
     return render_template(
         'home.html', song_model=song_model,
         tittle='Recently Added',
-        user_id=user_id
+        user_id=user_id, page_title=page_title
 
     )
 
@@ -33,6 +34,7 @@ def index():
 @mod.route('/view-all')
 def view_all():
 
+    page_title = 'MusicMan | View All Songs'
     user_id = session.get('user_id')
 
     if not user_id:
@@ -44,13 +46,14 @@ def view_all():
     return render_template(
         'home.html', song_model=song_model,
         tittle='All Songs',
-        user_id=user_id
+        user_id=user_id, page_title=page_title
     )
 
 
 @mod.route('/search')
 def search():
 
+    page_title = 'MusicMan | Search Result'
     user_id = session.get('user_id')
 
     if not user_id:
@@ -76,7 +79,8 @@ def search():
     return render_template(
         'search.html', song_model=song_model,
         tittle='Search Result', field=field,
-        user_id=user_id, query=query
+        user_id=user_id, query=query,
+        page_title=page_title
     )
 
 

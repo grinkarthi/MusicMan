@@ -12,6 +12,7 @@ mod = Blueprint('dashboard', __name__)
 @mod.route('/dashboard')
 def dashboard():
 
+    page_title = 'MusicMan | Manage Songs'
     user_id = session.get('user_id')
 
     if not user_id:
@@ -23,5 +24,6 @@ def dashboard():
     return render_template(
         'dashboard.html',
         user_id=user_id,
-        song_model=song_model
+        song_model=song_model,
+        page_title=page_title
     )

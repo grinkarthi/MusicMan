@@ -66,8 +66,6 @@ class Songs(Model):
         self.is_active = True
         self.user_id = user_id
         self.hashed_id = hashlib.md5(str(self.id).encode()).hexdigest()
-    '''def get_hash(self):
-        return hashlib.md5(str(self.id).encode()).hexdigest()'''
 
 
 init_db()

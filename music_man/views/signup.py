@@ -9,11 +9,13 @@ mod = Blueprint('signup', __name__)
 @mod.route('/signup')
 def index():
 
+    page_title = 'MusicMan | SignUp'
+
     if session.get('user_id'):
         return redirect('/')
 
     return render_template(
-        'signup.html'
+        'signup.html', page_title=page_title
     )
 
 

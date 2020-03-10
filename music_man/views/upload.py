@@ -12,7 +12,7 @@ mod = Blueprint('upload', __name__)
 
 @mod.route('/upload-song')
 def index():
-
+    page_title = 'MusicMan | Upload Song'
     user_id = session.get('user_id')
 
     if not user_id:
@@ -20,7 +20,8 @@ def index():
 
     return render_template(
         'upload.html',
-        user_id=user_id
+        user_id=user_id,
+        page_title=page_title
     )
 
 
@@ -56,8 +57,6 @@ def submit_file():
                                                        session.get('user_id'),
                                                        album, file_source.filename)
 
-        print("static_url--", static_url)
-
         song_model = Songs(title=title, album=album, artist=artist,
                            file_location=static_url, user_id=session.get('user_id'))
 
@@ -66,13 +65,10 @@ def submit_file():
         db_session.commit()
 
         song_id = song_model.id
-        print(song_id)
-
         hashed_id = hashlib.md5(str(song_id).encode()).hexdigest()
-        print(hashed_id)
 
-        update(Songs).where(Songs.id == song_id).values(hashed_id=hashed_id)
-
+        db_session.query(Songs).filter(Songs.id == song_id).update(
+            {Songs.hashed_id: hashed_id}, synchronize_session=False)
         db_session.commit()
 
         return redirect('/')
@@ -99,7 +95,8 @@ def file_validation():
     artist = input_details['artist']
 
     songs_model = Songs.query.filter_by(user_id=user_id,
-                                        title=title, album=album, artist=artist, is_active=True).first()
+                                        title=title, album=album,
+                                        artist=artist, is_active=True).first()
     if not songs_model:
         result = {"status": True}
         return jsonify(result)
